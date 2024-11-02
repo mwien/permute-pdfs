@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Permute PDFs</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h2>
+        Permute PDFs
+        </h2>
+      </header>
+      <main>
+        <input type="file" id="fileInput">
+        <div id="fileList"></div>
+        <label for "num_permutations"> Number of Permutations: </label>
+        <input type="number" id="num_permutations" name="num_permutations" min="1"> <br>
+        <button id="clear"> Clear </button>
+        <button id="generate-button"> Generate Permutations </button> <!-- gray out when no pdfs-->
+      </main>
+      <footer>
+        &#x1F582; marcel.wienoebst@gmx.de <br>
+        &copy; 2024 Marcel Wienöbst. All rights reserved.
+      </footer>
+    </div>
+  </body>
+</html>
