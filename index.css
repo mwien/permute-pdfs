@@ -8,7 +8,167 @@ main {
   flex: 1;
 }
 
-body,
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f8f9fa;
+  margin-top: 50px;
+}
+
+/* Styling the container */
+.container {
+    text-align: center;
+}
+
+/* File input styling */
+#fileInput {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 100%;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+#fileInput:hover {
+    border-color: #007bff;
+}
+
+#fileList {
+            margin: 15px 0;
+            font-size: 0.9em;
+            color: #555;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+.filename {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            font-size: 0.9em;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+/* Label styling */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Number input styling */
+#num_permutations {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+#num_permutations:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Button styling */
+button {
+    margin: 10px 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#clear {
+    background-color: #dc3545;
+    color: white;
+}
+#clear:hover {
+    background-color: #c82333;
+}
+
+#generate-button {
+    background-color: #007bff;
+    color: white;
+}
+#generate-button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+#generate-button:hover:enabled {
+    background-color: #0056b3;
+}
+
+.faq-container {
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.faq-item {
+    border-bottom: 1px solid #ddd;
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+.faq-question {
+    cursor: pointer;
+    padding: 15px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.faq-question:hover {
+    background-color: #f0f0f0;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 15px;
+}
+
+.faq-answer p {
+    margin: 15px 0;
+}
+
+.faq-question::after {
+    content: "+";
+    font-size: 1.2em;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 200px; /* Adjust based on answer length */
+}
+
+.faq-item.active .faq-question::after {
+    content: "-";
+}
+
 html {
     margin: 0;
     padding: 0;

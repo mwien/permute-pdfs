@@ -1,6 +1,6 @@
 import { PDFDocument } from "pdf-lib";
-import { shuffle } from "underscore";
-import { ZipWriter, BlobWriter } from "zip-js";
+import { shuffle } from "lodash";
+import { ZipWriter, BlobWriter, BlobReader, TextReader } from "@zip.js/zip.js";
 
 let files = [];
 
@@ -13,13 +13,17 @@ document
     reader.onload = function (event) {
       let arrayBuffer = event.target.result;
       files.push([file, arrayBuffer]);
+      const listItem = document.createElement("div");
+      listItem.classList.add("filename"); // Apply the .filename styling
+      listItem.textContent = `${file.name}`;
       var fileList = document.getElementById("fileList");
-      var fileName = document.createTextNode(file.name + ", ");
-      fileList.appendChild(fileName);
+      fileList.appendChild(listItem);
     };
 
     reader.readAsArrayBuffer(file);
     this.value = null;
+    let generateButton = document.getElementById("generate-button");
+    generateButton.disabled = files.length === 0;
   });
 
 async function mergePDFs(files) {
@@ -45,23 +49,36 @@ document
       let permutations = [];
       let permuted_pdfs = [];
       for (let i = 1; i <= num_permutations; i++) {
-        // copy files
         let permutation = shuffle(files);
+        // store permutation of file names in permutations
         permutations.push(permutation.map((x) => x[0]));
+        // merge pdfs in permutation order
         const mergedPdfBytes = await mergePDFs(permutation.map((x) => x[1]));
-        permuted_pdfs.push(
-          `$(i).pdf`,
+        // store merged pdf in permuted_pdfs
+        permuted_pdfs.push([
+          i + ".pdf",
           new Blob([mergedPdfBytes], { type: "application/pdf" }),
-        );
+        ]);
       }
-      const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
 
-      files.forEach(async (file) => {
-        await zipWriter.add(file[0], new BlobReader(file[1]));
+      // write files to zip
+      const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
+      permuted_pdfs.forEach(async (pdf) => {
+        await zipWriter.add(pdf[0], new BlobReader(pdf[1]));
       });
-      var json_string = JSON.stringify(permutations, undefined, 2);
-      zip.file("permutation.txt", new TextReader(json_string));
+
+      var permutation_string = "";
+      for (let i = 0; i < num_permutations; i++) {
+        permutation_string += i + 1 + ": ";
+        for (const file of permutations[i]) {
+          permutation_string += file.name + ", ";
+        }
+        permutation_string += "\n";
+      }
+      zipWriter.add("permutation.txt", new TextReader(permutation_string));
+
       const zipBlob = await zipWriter.close();
+
       const link = document.createElement("a");
       link.href = URL.createObjectURL(zipBlob);
       link.download = "files.zip";
@@ -75,5 +92,11 @@ document.getElementById("clear").addEventListener("click", () => {
   files = [];
   var fileList = document.getElementById("fileList");
   fileList.innerHTML = "";
-  console.log("hi");
+});
+
+document.querySelectorAll(".faq-question").forEach((question) => {
+  question.addEventListener("click", () => {
+    const faqItem = question.parentElement;
+    faqItem.classList.toggle("active");
+  });
 });
