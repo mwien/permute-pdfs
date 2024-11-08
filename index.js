@@ -5469,7 +5469,7 @@
             }, wait);
           }
           function baseDifference(array, values3, iteratee2, comparator) {
-            var index = -1, includes2 = arrayIncludes, isCommon = true, length = array.length, result2 = [], valuesLength = values3.length;
+            var index = -1, includes3 = arrayIncludes, isCommon = true, length = array.length, result2 = [], valuesLength = values3.length;
             if (!length) {
               return result2;
             }
@@ -5477,10 +5477,10 @@
               values3 = arrayMap(values3, baseUnary(iteratee2));
             }
             if (comparator) {
-              includes2 = arrayIncludesWith;
+              includes3 = arrayIncludesWith;
               isCommon = false;
             } else if (values3.length >= LARGE_ARRAY_SIZE) {
-              includes2 = cacheHas;
+              includes3 = cacheHas;
               isCommon = false;
               values3 = new SetCache(values3);
             }
@@ -5496,7 +5496,7 @@
                     }
                   }
                   result2.push(value);
-                } else if (!includes2(values3, computed, comparator)) {
+                } else if (!includes3(values3, computed, comparator)) {
                   result2.push(value);
                 }
               }
@@ -5609,7 +5609,7 @@
             return number >= nativeMin(start, end) && number < nativeMax(start, end);
           }
           function baseIntersection(arrays, iteratee2, comparator) {
-            var includes2 = comparator ? arrayIncludesWith : arrayIncludes, length = arrays[0].length, othLength = arrays.length, othIndex = othLength, caches = Array2(othLength), maxLength = Infinity, result2 = [];
+            var includes3 = comparator ? arrayIncludesWith : arrayIncludes, length = arrays[0].length, othLength = arrays.length, othIndex = othLength, caches = Array2(othLength), maxLength = Infinity, result2 = [];
             while (othIndex--) {
               var array = arrays[othIndex];
               if (othIndex && iteratee2) {
@@ -5624,11 +5624,11 @@
               while (++index < length && result2.length < maxLength) {
                 var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
                 value = comparator || value !== 0 ? value : 0;
-                if (!(seen ? cacheHas(seen, computed) : includes2(result2, computed, comparator))) {
+                if (!(seen ? cacheHas(seen, computed) : includes3(result2, computed, comparator))) {
                   othIndex = othLength;
                   while (--othIndex) {
                     var cache = caches[othIndex];
-                    if (!(cache ? cacheHas(cache, computed) : includes2(arrays[othIndex], computed, comparator))) {
+                    if (!(cache ? cacheHas(cache, computed) : includes3(arrays[othIndex], computed, comparator))) {
                       continue outer;
                     }
                   }
@@ -6140,17 +6140,17 @@
             return result2 == "0" && 1 / value == -INFINITY ? "-0" : result2;
           }
           function baseUniq(array, iteratee2, comparator) {
-            var index = -1, includes2 = arrayIncludes, length = array.length, isCommon = true, result2 = [], seen = result2;
+            var index = -1, includes3 = arrayIncludes, length = array.length, isCommon = true, result2 = [], seen = result2;
             if (comparator) {
               isCommon = false;
-              includes2 = arrayIncludesWith;
+              includes3 = arrayIncludesWith;
             } else if (length >= LARGE_ARRAY_SIZE) {
               var set2 = iteratee2 ? null : createSet(array);
               if (set2) {
                 return setToArray(set2);
               }
               isCommon = false;
-              includes2 = cacheHas;
+              includes3 = cacheHas;
               seen = new SetCache();
             } else {
               seen = iteratee2 ? [] : result2;
@@ -6170,7 +6170,7 @@
                     seen.push(computed);
                   }
                   result2.push(value);
-                } else if (!includes2(seen, computed, comparator)) {
+                } else if (!includes3(seen, computed, comparator)) {
                   if (seen !== result2) {
                     seen.push(computed);
                   }
@@ -7901,7 +7901,7 @@
               baseAssignValue(result2, key, [value]);
             }
           });
-          function includes(collection, value, fromIndex, guard) {
+          function includes2(collection, value, fromIndex, guard) {
             collection = isArrayLike(collection) ? collection : values2(collection);
             fromIndex = fromIndex && !guard ? toInteger(fromIndex) : 0;
             var length = collection.length;
@@ -9430,7 +9430,7 @@
           lodash.hasIn = hasIn;
           lodash.head = head;
           lodash.identity = identity;
-          lodash.includes = includes;
+          lodash.includes = includes2;
           lodash.indexOf = indexOf;
           lodash.inRange = inRange;
           lodash.invoke = invoke;
@@ -34902,7 +34902,7 @@
 
   // app.js
   var files = [];
-  document.getElementById("fileInput").addEventListener("change", function(event) {
+  document.getElementById("pdfInput").addEventListener("change", function(event) {
     let file = event.target.files[0];
     let reader = new FileReader();
     reader.onload = function(event2) {
@@ -34972,6 +34972,17 @@
     files = [];
     var fileList = document.getElementById("fileList");
     fileList.innerHTML = "";
+  });
+  includeTitle = document.getElementById("includeTitle");
+  includeTitle.addEventListener("change", () => {
+    console.log("hi");
+    let titleInput = document.getElementById("titleInput");
+    console.log(includeTitle.checked);
+    if (includeTitle.checked) {
+      titleInput.style.visibility = "visible";
+    } else {
+      titleInput.style.visibility = "hidden";
+    }
   });
   document.querySelectorAll(".faq-question").forEach((question) => {
     question.addEventListener("click", () => {

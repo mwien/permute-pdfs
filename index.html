@@ -14,10 +14,31 @@
         </h2>
       </header>
       <main>
-        <input type="file" id="fileInput">
-        <div id="fileList"></div>
-        <label for "num_permutations"> Number of Permutations: </label>
-        <input type="number" id="num_permutations" name="num_permutations" min="1"> <br>
+        <div class="formRow">
+          <input type="file" id="pdfInput">
+        </div>
+
+        <div id="fileList">
+          <span> Files: </span>
+        </div>
+
+        <div class="formRow">
+          <label for "num_permutations"> Number of Permutations: </label>
+          <input type="number" id="num_permutations" name="num_permutations" min="1">
+        </div>
+
+        <div class="formRow">
+
+          <label for "includeTitle"> Add Title Page </label>
+          <input type="checkbox" id="includeTitle" name="includeTitle">
+          <input type="file" id="titleInput" style="visibility:hidden">
+        </div>
+
+        <div class="formRow">
+          <label for "includeStamp"> Add Stamp </label>
+          <input type="checkbox" id="includeStamp" name="includeStamp">
+        </div>
+
         <button id="clear"> Clear Files </button>
         <button id="generate-button" disabled> Generate Permutations </button> <!-- enable when pdfs TODO-->
 
@@ -28,35 +49,34 @@
         <div class="faq-container">
         <h2>Frequently Asked Questions</h2>
 
-        <!-- FAQ Item 1 -->
         <div class="faq-item">
             <div class="faq-question">What are some potential use cases of this website?</div>
               <div class="faq-answer">
-                <p> You could can create random orders for questionaires in studies (medicine/psychology) or for taks in an exam. Maybe you can come up with other use cases, in that case feel free to write me. </p>
+                <p> You could create random orders for questionaires in studies or for tasks in an exam. Maybe you come up with other use cases that I can add to this list. </p>
             </div>
         </div>
         <div class="faq-item">
-            <div class="faq-question">What about privacy?</div>
+            <div class="faq-question">What about the privacy of my documents?</div>
               <div class="faq-answer">
-                <p> All your data (pdfs) is completely private and does NOT leave your device. </p>
+                <p> Everything you enter on this page is completely private and does not even leave your device. </p>
             </div>
         </div>
         <div class="faq-item">
             <div class="faq-question">I need a slightly different feature than what is offered here. Can this be added? </div>
               <div class="faq-answer">
-                <p> Yes, please open an issue under TODO. The same holds if you encounter other problems. </p>
+                <p> Yes, please open an issue here. The same holds if you encounter any other problems. </p>
             </div>
         </div>
         <div class="faq-item">
             <div class="faq-question"> How are the random permutations generated? </div>
               <div class="faq-answer">
-                <p> This is done in JavaScript using pseudo-random generators, more precisely the shuffle function provided by underscore (TODO: link). It should be sufficiently random for most applications and behave similarly to randomly sampled permutations in other languages such as R, Python etc.</p>
+                <p> This is done in JavaScript using pseudo-random generators, more precisely the shuffle function provided by lodash (link). It should be sufficiently random for most applications and behave similarly to randomly sampled permutations in other languages such as R, Python etc.</p>
             </div>
         </div>
         <div class="faq-item">
             <div class="faq-question"> Is it possible to seed the random generator in order to reproduce permutations? </div>
               <div class="faq-answer">
-                <p> No, this is unfortunately not possible at the moment, but may be added later. </p>
+                <p> No, this is unfortunately not possible at the moment, but may be added later on request. </p>
             </div>
         </div>
       </main>

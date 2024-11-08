@@ -1,11 +1,11 @@
 import { PDFDocument } from "pdf-lib";
-import { shuffle } from "lodash";
+import { includes, shuffle } from "lodash";
 import { ZipWriter, BlobWriter, BlobReader, TextReader } from "@zip.js/zip.js";
 
 let files = [];
 
 document
-  .getElementById("fileInput")
+  .getElementById("pdfInput")
   .addEventListener("change", function (event) {
     let file = event.target.files[0];
     let reader = new FileReader();
@@ -92,6 +92,16 @@ document.getElementById("clear").addEventListener("click", () => {
   files = [];
   var fileList = document.getElementById("fileList");
   fileList.innerHTML = "";
+});
+
+includeTitle = document.getElementById("includeTitle");
+includeTitle.addEventListener("change", () => {
+  let titleInput = document.getElementById("titleInput");
+  if (includeTitle.checked) {
+    titleInput.style.visibility = "visible";
+  } else {
+    titleInput.style.visibility = "hidden";
+  }
 });
 
 document.querySelectorAll(".faq-question").forEach((question) => {

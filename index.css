@@ -17,70 +17,77 @@ body {
   margin-top: 50px;
 }
 
-/* Styling the container */
-.container {
-    text-align: center;
+.formRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
 }
 
 /* File input styling */
-#fileInput {
-    display: block;
+input[type=file] {
+    margin: 5px auto;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    flex-grow: 1;
+}
+
+input[type=number] {
     margin: 10px auto;
     padding: 10px;
-    width: 100%;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    flex-grow: 1;
+}
+
+input[type=file]:hover {
+    border-color: #007bff;
+}
+input[type=checkbox] {
+    margin: 10px;
+    margin-right: 20px;
+    padding: 10px;
     border: 2px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
     transition: border-color 0.3s ease;
 }
-#fileInput:hover {
-    border-color: #007bff;
-}
 
 #fileList {
-            margin: 15px 0;
-            font-size: 0.9em;
-            color: #555;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #f1f1f1;
-            max-height: 150px;
-            overflow-y: auto;
-        }
+  font-size: 0.9em;
+  color: #555;
+  border: 1px solid #ddd;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f1f1f1;
+  max-height: 150px;
+  overflow-y: auto;
+}
 
 .filename {
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #e9ecef;
-            font-size: 0.9em;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #e9ecef;
+  font-size: 0.9em;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
 /* Label styling */
 label {
-    display: block;
-    margin-top: 10px;
+    margin: 10px;
     font-weight: bold;
     color: #333;
-}
-
-/* Number input styling */
-#num_permutations {
-    width: 100%;
-    padding: 8px;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
-}
-#num_permutations:focus {
-    border-color: #007bff;
-    outline: none;
 }
 
 /* Button styling */
@@ -115,8 +122,6 @@ button {
 }
 
 .faq-container {
-    max-width: 600px;
-    width: 100%;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
