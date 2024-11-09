@@ -5469,7 +5469,7 @@
             }, wait);
           }
           function baseDifference(array, values3, iteratee2, comparator) {
-            var index = -1, includes3 = arrayIncludes, isCommon = true, length = array.length, result2 = [], valuesLength = values3.length;
+            var index = -1, includes2 = arrayIncludes, isCommon = true, length = array.length, result2 = [], valuesLength = values3.length;
             if (!length) {
               return result2;
             }
@@ -5477,10 +5477,10 @@
               values3 = arrayMap(values3, baseUnary(iteratee2));
             }
             if (comparator) {
-              includes3 = arrayIncludesWith;
+              includes2 = arrayIncludesWith;
               isCommon = false;
             } else if (values3.length >= LARGE_ARRAY_SIZE) {
-              includes3 = cacheHas;
+              includes2 = cacheHas;
               isCommon = false;
               values3 = new SetCache(values3);
             }
@@ -5496,7 +5496,7 @@
                     }
                   }
                   result2.push(value);
-                } else if (!includes3(values3, computed, comparator)) {
+                } else if (!includes2(values3, computed, comparator)) {
                   result2.push(value);
                 }
               }
@@ -5609,7 +5609,7 @@
             return number >= nativeMin(start, end) && number < nativeMax(start, end);
           }
           function baseIntersection(arrays, iteratee2, comparator) {
-            var includes3 = comparator ? arrayIncludesWith : arrayIncludes, length = arrays[0].length, othLength = arrays.length, othIndex = othLength, caches = Array2(othLength), maxLength = Infinity, result2 = [];
+            var includes2 = comparator ? arrayIncludesWith : arrayIncludes, length = arrays[0].length, othLength = arrays.length, othIndex = othLength, caches = Array2(othLength), maxLength = Infinity, result2 = [];
             while (othIndex--) {
               var array = arrays[othIndex];
               if (othIndex && iteratee2) {
@@ -5624,11 +5624,11 @@
               while (++index < length && result2.length < maxLength) {
                 var value = array[index], computed = iteratee2 ? iteratee2(value) : value;
                 value = comparator || value !== 0 ? value : 0;
-                if (!(seen ? cacheHas(seen, computed) : includes3(result2, computed, comparator))) {
+                if (!(seen ? cacheHas(seen, computed) : includes2(result2, computed, comparator))) {
                   othIndex = othLength;
                   while (--othIndex) {
                     var cache = caches[othIndex];
-                    if (!(cache ? cacheHas(cache, computed) : includes3(arrays[othIndex], computed, comparator))) {
+                    if (!(cache ? cacheHas(cache, computed) : includes2(arrays[othIndex], computed, comparator))) {
                       continue outer;
                     }
                   }
@@ -6140,17 +6140,17 @@
             return result2 == "0" && 1 / value == -INFINITY ? "-0" : result2;
           }
           function baseUniq(array, iteratee2, comparator) {
-            var index = -1, includes3 = arrayIncludes, length = array.length, isCommon = true, result2 = [], seen = result2;
+            var index = -1, includes2 = arrayIncludes, length = array.length, isCommon = true, result2 = [], seen = result2;
             if (comparator) {
               isCommon = false;
-              includes3 = arrayIncludesWith;
+              includes2 = arrayIncludesWith;
             } else if (length >= LARGE_ARRAY_SIZE) {
               var set2 = iteratee2 ? null : createSet(array);
               if (set2) {
                 return setToArray(set2);
               }
               isCommon = false;
-              includes3 = cacheHas;
+              includes2 = cacheHas;
               seen = new SetCache();
             } else {
               seen = iteratee2 ? [] : result2;
@@ -6170,7 +6170,7 @@
                     seen.push(computed);
                   }
                   result2.push(value);
-                } else if (!includes3(seen, computed, comparator)) {
+                } else if (!includes2(seen, computed, comparator)) {
                   if (seen !== result2) {
                     seen.push(computed);
                   }
@@ -7901,7 +7901,7 @@
               baseAssignValue(result2, key, [value]);
             }
           });
-          function includes2(collection, value, fromIndex, guard) {
+          function includes(collection, value, fromIndex, guard) {
             collection = isArrayLike(collection) ? collection : values2(collection);
             fromIndex = fromIndex && !guard ? toInteger(fromIndex) : 0;
             var length = collection.length;
@@ -9430,7 +9430,7 @@
           lodash.hasIn = hasIn;
           lodash.head = head;
           lodash.identity = identity;
-          lodash.includes = includes2;
+          lodash.includes = includes;
           lodash.indexOf = indexOf;
           lodash.inRange = inRange;
           lodash.invoke = invoke;
@@ -34901,8 +34901,25 @@
   configure({ Deflate: ZipDeflate, Inflate: ZipInflate });
 
   // app.js
+  var pdfInput = document.getElementById("pdfInput");
+  var fileList = document.getElementById("fileList");
+  var numPermutations = document.getElementById("num_permutations");
+  var includeTitle = document.getElementById("includeTitle");
+  var titleForm = document.getElementById("titleForm");
+  var titleInput = document.getElementById("titleInput");
+  var includeStamp = document.getElementById("includeStamp");
+  var stampForm = document.getElementById("stampForm");
+  var clearButton = document.getElementById("clear");
+  var generateButton = document.getElementById("generate-button");
+  if (includeTitle.checked) {
+    titleForm.style.display = "flex";
+  }
+  if (includeStamp.checked) {
+    stampForm.style.display = "flex";
+  }
   var files = [];
-  document.getElementById("pdfInput").addEventListener("change", function(event) {
+  var titleFile;
+  pdfInput.addEventListener("change", function(event) {
     let file = event.target.files[0];
     let reader = new FileReader();
     reader.onload = function(event2) {
@@ -34911,36 +34928,56 @@
       const listItem = document.createElement("div");
       listItem.classList.add("filename");
       listItem.textContent = `${file.name}`;
-      var fileList = document.getElementById("fileList");
       fileList.appendChild(listItem);
     };
     reader.readAsArrayBuffer(file);
     this.value = null;
-    let generateButton = document.getElementById("generate-button");
     generateButton.disabled = files.length === 0;
   });
-  async function mergePDFs(files2) {
+  titleInput.addEventListener("change", function(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.onload = function(event2) {
+      let arrayBuffer = event2.target.result;
+      titleFile = [file, arrayBuffer];
+    };
+  });
+  async function appendPDF(toPdf, fromPdf) {
+    const newPages = await toPdf.copyPages(fromPdf, fromPdf.getPageIndices());
+    newPages.forEach((page) => toPdf.addPage(page));
+  }
+  async function mergePDFs(title, files2) {
     const mergedPdf = await PDFDocument_default.create();
+    if (title != null) {
+      const titlePdf = await PDFDocument_default.load(title);
+      await appendPDF(mergedPdf, titlePdf);
+    }
     for (const file of files2) {
       const nextPdf = await PDFDocument_default.load(file);
-      const copiedPages = await mergedPdf.copyPages(
-        nextPdf,
-        nextPdf.getPageIndices()
-      );
-      copiedPages.forEach((page) => mergedPdf.addPage(page));
+      await appendPDF(mergedPdf, nextPdf);
     }
     const mergedPdfBytes = await mergedPdf.save();
     return mergedPdfBytes;
   }
-  document.getElementById("generate-button").addEventListener("click", async () => {
+  generateButton.addEventListener("click", async () => {
     try {
-      let num_permutations = document.getElementById("num_permutations").valueAsNumber;
+      let n = numPermutations.valueAsNumber;
       let permutations = [];
       let permuted_pdfs = [];
-      for (let i = 1; i <= num_permutations; i++) {
+      var title = ["", ""];
+      console.log(title);
+      if (includeTitle.checked) {
+        console.log(titleFile);
+        title = titleFile;
+      }
+      for (let i = 1; i <= n; i++) {
         let permutation = (0, import_lodash.shuffle)(files);
         permutations.push(permutation.map((x) => x[0]));
-        const mergedPdfBytes = await mergePDFs(permutation.map((x) => x[1]));
+        console.log(title);
+        const mergedPdfBytes = await mergePDFs(
+          title[1],
+          permutation.map((x) => x[1])
+        );
         permuted_pdfs.push([
           i + ".pdf",
           new Blob([mergedPdfBytes], { type: "application/pdf" })
@@ -34951,7 +34988,7 @@
         await zipWriter.add(pdf[0], new BlobReader(pdf[1]));
       });
       var permutation_string = "";
-      for (let i = 0; i < num_permutations; i++) {
+      for (let i = 0; i < n; i++) {
         permutation_string += i + 1 + ": ";
         for (const file of permutations[i]) {
           permutation_string += file.name + ", ";
@@ -34968,27 +35005,22 @@
       console.error("Error generating PDFs:", error2);
     }
   });
-  document.getElementById("clear").addEventListener("click", () => {
+  clearButton.addEventListener("click", () => {
     files = [];
-    var fileList = document.getElementById("fileList");
     fileList.innerHTML = "";
   });
-  includeTitle = document.getElementById("includeTitle");
   includeTitle.addEventListener("change", () => {
-    let titleInput = document.getElementById("titlePage");
     if (includeTitle.checked) {
-      titleInput.style.display = "flex";
+      titleForm.style.display = "flex";
     } else {
-      titleInput.style.display = "none";
+      titleForm.style.display = "none";
     }
   });
-  includeStamp = document.getElementById("includeStamp");
   includeStamp.addEventListener("change", () => {
-    let stamp = document.getElementById("stamp");
     if (includeStamp.checked) {
-      stamp.style.display = "flex";
+      stampForm.style.display = "flex";
     } else {
-      stamp.style.display = "none";
+      stampForm.style.display = "none";
     }
   });
   document.querySelectorAll(".faq-question").forEach((question) => {

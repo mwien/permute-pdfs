@@ -58,12 +58,13 @@
           </div>
         </div>
 
-        <div class="formRow" id="titlePage" style="display:none">
+          // limit accepted file types
+        <div class="formRow" id="titleForm" style="display:none">
           <label for "titleInput"> Upload Title Page </label>
           <input type="file" id="titleInput">
         </div>
 
-        <div class="formRow" id="stamp" style="display:none">
+        <div class="formRow" id="stampForm" style="display:none">
           <label for "stampOffset"> Stamp Offset </label>
           <input type="number" id="stampOffset" name="stampOffset" min="0">
           <label for "stampText"> Stamp Text </label>
@@ -73,6 +74,7 @@
         <div class="formRow">
           <button id="clear"> Clear Files </button>
           <button id="generate-button" disabled> Generate Permutations </button>
+        </div>
         </div>
 
         <div class="content-container">
@@ -116,6 +118,7 @@
                 <p> No, this is unfortunately not possible at the moment, but may be added later if requested. </p>
             </div>
         </div>
+      </div>
       </main>
       <footer>
         &#x1F582; marcel.wienoebst@gmx.de <br>
