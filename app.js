@@ -96,14 +96,23 @@ document.getElementById("clear").addEventListener("click", () => {
 
 includeTitle = document.getElementById("includeTitle");
 includeTitle.addEventListener("change", () => {
-  let titleInput = document.getElementById("titleInput");
+  let titleInput = document.getElementById("titlePage");
   if (includeTitle.checked) {
-    titleInput.style.visibility = "visible";
+    titleInput.style.display = "flex";
   } else {
-    titleInput.style.visibility = "hidden";
+    titleInput.style.display = "none";
   }
 });
 
+includeStamp = document.getElementById("includeStamp");
+includeStamp.addEventListener("change", () => {
+  let stamp = document.getElementById("stamp");
+  if (includeStamp.checked) {
+    stamp.style.display = "flex";
+  } else {
+    stamp.style.display = "none";
+  }
+});
 document.querySelectorAll(".faq-question").forEach((question) => {
   question.addEventListener("click", () => {
     const faqItem = question.parentElement;

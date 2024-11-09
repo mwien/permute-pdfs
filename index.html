@@ -2,20 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Permute PDFs</title>
+    <title>PDF Permutations</title>
     <link rel="stylesheet" href="index.css">
     <script src="index.js" defer></script>
   </head>
   <body>
     <div class="container">
       <header>
-        <h2>
-        Permute PDFs
-        </h2>
+        <h1>PDF Permutations</h1>
       </header>
       <main>
+        <div class="content-container">
+          <p>
+            <b> Easily generate a number of randomly permuted PDF documents! For a quick start: </b>
+            <ol>
+              <li>Upload your files.</li>
+              <li>Specify the number of permutations.</li>
+              <li>Press "Generate Permutations".</li>
+            </ol>
+          </p>
+        </div>
+
+        <div class="content-container">
         <div class="formRow">
-          <input type="file" id="pdfInput">
+          <label for "pdfInput"> Upload PDF </label>
+          <input type="file" id="pdfInput" name="pdfInput">
         </div>
 
         <div id="fileList">
@@ -29,25 +40,51 @@
 
         <div class="formRow">
 
-          <label for "includeTitle"> Add Title Page </label>
-          <input type="checkbox" id="includeTitle" name="includeTitle">
-          <input type="file" id="titleInput" style="visibility:hidden">
+          <div>
+            <label for "includeTitle"> Include Title Page </label>
+            <input type="checkbox" id="includeTitle" name="includeTitle">
+          </div>
+          <div>
+            <label for "includeStamp"> Include Stamp </label>
+            <input type="checkbox" id="includeStamp" name="includeStamp">
+          </div>
+          <div>
+            <label for "collapse"> Collapse into one PDF file </label>
+            <input type="checkbox" id="collapse" name="collapse">
+          </div>
+          <div>
+            <label for "makeEven"> Make number of pages per permutation even </label>
+            <input type="checkbox" id="makeEven" name="makeEven">
+          </div>
+        </div>
+
+        <div class="formRow" id="titlePage" style="display:none">
+          <label for "titleInput"> Upload Title Page </label>
+          <input type="file" id="titleInput">
+        </div>
+
+        <div class="formRow" id="stamp" style="display:none">
+          <label for "stampOffset"> Stamp Offset </label>
+          <input type="number" id="stampOffset" name="stampOffset" min="0">
+          <label for "stampText"> Stamp Text </label>
+          <input type="text" id="stampText" name="stampText">
         </div>
 
         <div class="formRow">
-          <label for "includeStamp"> Add Stamp </label>
-          <input type="checkbox" id="includeStamp" name="includeStamp">
+          <button id="clear"> Clear Files </button>
+          <button id="generate-button" disabled> Generate Permutations </button>
         </div>
 
-        <button id="clear"> Clear Files </button>
-        <button id="generate-button" disabled> Generate Permutations </button> <!-- enable when pdfs TODO-->
-
-        <!--TODO: add stamp and some parameters (xoffset, yoffset, content) to control stamp <br>-->
-
-        <!-- TODO: have explanation section -->
-
-        <div class="faq-container">
+        <div class="content-container">
         <h2>Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">How does this work?</div>
+              <div class="faq-answer">
+                <p> You can upload some PDFs and generate a specified number of permutations of those PDFs. So if you upload four PDF files and request six permutations, this will generate a zip file with six PDFs files, each consisting of the four PDFs in random order, and a text file which lists the permutations. </p>
+                <p>Further, you can add a title page, which will prepend every permutation, add a stamp on the first page and also collapse everything into a single PDF file (in this case consider setting the option of making the number of pages per permutation even if you want to print two-sided). </p>
+            </div>
+        </div>
 
         <div class="faq-item">
             <div class="faq-question">What are some potential use cases of this website?</div>
@@ -64,7 +101,7 @@
         <div class="faq-item">
             <div class="faq-question">I need a slightly different feature than what is offered here. Can this be added? </div>
               <div class="faq-answer">
-                <p> Yes, please open an issue here. The same holds if you encounter any other problems. </p>
+              <p> Yes, please open an issue <a href="https://github.com/mwien/permute-pdfs/issues">here</a>. The same holds if you encounter any other problems. </p>
             </div>
         </div>
         <div class="faq-item">
@@ -76,7 +113,7 @@
         <div class="faq-item">
             <div class="faq-question"> Is it possible to seed the random generator in order to reproduce permutations? </div>
               <div class="faq-answer">
-                <p> No, this is unfortunately not possible at the moment, but may be added later on request. </p>
+                <p> No, this is unfortunately not possible at the moment, but may be added later if requested. </p>
             </div>
         </div>
       </main>
