@@ -192,9 +192,16 @@ html {
     padding: 0;
 }
 
-header,
-main,
+header {
+  margin: 0;
+  display: block;
+}
+main {
+  margin: 0;
+  display: block;
+}
 footer {
   margin: 0;
   display: block;
+  text-align: center;
 }

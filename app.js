@@ -10,6 +10,10 @@ let titleForm = document.getElementById("titleForm");
 let titleInput = document.getElementById("titleInput");
 let includeStamp = document.getElementById("includeStamp");
 let stampForm = document.getElementById("stampForm");
+let stampOffset = document.getElementById("stampOffset");
+let stampText = document.getElementById("stampText");
+let collapse = document.getElementById("collapse");
+let makeEven = document.getElementById("makeEven");
 let clearButton = document.getElementById("clear");
 let generateButton = document.getElementById("generate-button");
 
@@ -57,61 +61,107 @@ async function mergePDFs(title, files) {
     const nextPdf = await PDFDocument.load(file);
     await appendPDF(mergedPdf, nextPdf);
   }
-  const mergedPdfBytes = await mergedPdf.save();
-  return mergedPdfBytes;
+  return mergedPdf;
 }
 
-// get title file directly from titleInput TODO:
+function getPermutationString(permutations) {
+  var permutation_string = "";
+  for (let i = 0; i < permutations.length; i++) {
+    permutation_string += i + 1 + ": ";
+    for (const file of permutations[i]) {
+      permutation_string += file.name + ", ";
+    }
+    permutation_string += "\n";
+  }
+  return permutation_string;
+}
+
 generateButton.addEventListener("click", async () => {
   try {
     let n = numPermutations.valueAsNumber;
     let permutations = [];
-    let permuted_pdfs = [];
-    var title = ["", ""];
-    console.log(title);
-    if (includeTitle.checked) {
-      console.log(titleFile);
-      title = titleFile;
-    }
+    let permutedPdfBytes = [];
+    let title = [null, null];
+    if (includeTitle.checked && titleInput.files.length > 0) {
+      let file = titleInput.files[0];
+      let reader = new FileReader();
+
+      reader.onload = function (event) {
+        let arrayBuffer = event.target.result;
+        title = [file, arrayBuffer];
+      };
+
+      reader.readAsArrayBuffer(file);
+    } // add error handling
     for (let i = 1; i <= n; i++) {
       let permutation = shuffle(files);
       // store permutation of file names in permutations
       permutations.push(permutation.map((x) => x[0]));
       // merge pdfs in permutation order
-      console.log(title);
-      const mergedPdfBytes = await mergePDFs(
+      let mergedPdf = await mergePDFs(
         title[1],
         permutation.map((x) => x[1]),
       );
-      // store merged pdf in permuted_pdfs
-      permuted_pdfs.push([
-        i + ".pdf",
-        new Blob([mergedPdfBytes], { type: "application/pdf" }),
-      ]);
-    }
 
-    // write files to zip
-    const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
-    permuted_pdfs.forEach(async (pdf) => {
-      await zipWriter.add(pdf[0], new BlobReader(pdf[1]));
-    });
+      let firstPage = mergedPdf.getPage(0);
+      const height = firstPage.getHeight();
+      const fontSize = 20;
+      firstPage.drawText(stampText.value + " " + i, {
+        x: stampOffset.valueAsNumber,
+        y: height - 2 * fontSize,
+        size: fontSize,
+      });
 
-    var permutation_string = "";
-    for (let i = 0; i < n; i++) {
-      permutation_string += i + 1 + ": ";
-      for (const file of permutations[i]) {
-        permutation_string += file.name + ", ";
+      if (makeEven.checked && mergedPdf.getPages().length % 2 != 0) {
+        mergedPdf.addPage();
       }
-      permutation_string += "\n";
+
+      const mergedPdfBytes = await mergedPdf.save();
+      permutedPdfBytes.push(mergedPdfBytes);
     }
-    zipWriter.add("permutation.txt", new TextReader(permutation_string));
 
-    const zipBlob = await zipWriter.close();
+    if (!collapse.checked) {
+      // write files to zip
+      const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
+      for (let i = 0; i < n; i++) {
+        let pdfName = i + 1 + ".pdf";
+        let pdfFile = new Blob([permutedPdfBytes[i]], {
+          type: "application/pdf",
+        });
+        await zipWriter.add(pdfName, new BlobReader(pdfFile));
+      }
 
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(zipBlob);
-    link.download = "files.zip";
-    link.click();
+      zipWriter.add(
+        "permutations.txt",
+        new TextReader(getPermutationString(permutations)),
+      );
+
+      const zipBlob = await zipWriter.close();
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(zipBlob);
+      link.download = "files.zip";
+      link.click();
+    } else {
+      // write files to single pdf
+      let fullPdf = await mergePDFs(null, permutedPdfBytes);
+      let fullPdfBytes = await fullPdf.save();
+      let result = new Blob([fullPdfBytes], { type: "application/pdf" });
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(result);
+      link.download = "permutations.pdf";
+      link.click();
+      URL.revokeObjectURL(link.href);
+      const txt = new Blob([getPermutationString(permutations)], {
+        type: "text/plain",
+      });
+      const txtLink = document.createElement("a");
+      txtLink.download = "permutations.txt";
+      txtLink.href = URL.createObjectURL(txt);
+      txtLink.click();
+      URL.revokeObjectURL(txtLink.href);
+    }
   } catch (error) {
     console.error("Error generating PDFs:", error);
   }

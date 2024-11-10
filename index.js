@@ -34909,6 +34909,10 @@
   var titleInput = document.getElementById("titleInput");
   var includeStamp = document.getElementById("includeStamp");
   var stampForm = document.getElementById("stampForm");
+  var stampOffset = document.getElementById("stampOffset");
+  var stampText = document.getElementById("stampText");
+  var collapse = document.getElementById("collapse");
+  var makeEven = document.getElementById("makeEven");
   var clearButton = document.getElementById("clear");
   var generateButton = document.getElementById("generate-button");
   if (includeTitle.checked) {
@@ -34918,7 +34922,6 @@
     stampForm.style.display = "flex";
   }
   var files = [];
-  var titleFile;
   pdfInput.addEventListener("change", function(event) {
     let file = event.target.files[0];
     let reader = new FileReader();
@@ -34934,14 +34937,6 @@
     this.value = null;
     generateButton.disabled = files.length === 0;
   });
-  titleInput.addEventListener("change", function(event) {
-    let file = event.target.files[0];
-    let reader = new FileReader();
-    reader.onload = function(event2) {
-      let arrayBuffer = event2.target.result;
-      titleFile = [file, arrayBuffer];
-    };
-  });
   async function appendPDF(toPdf, fromPdf) {
     const newPages = await toPdf.copyPages(fromPdf, fromPdf.getPageIndices());
     newPages.forEach((page) => toPdf.addPage(page));
@@ -34956,51 +34951,91 @@
       const nextPdf = await PDFDocument_default.load(file);
       await appendPDF(mergedPdf, nextPdf);
     }
-    const mergedPdfBytes = await mergedPdf.save();
-    return mergedPdfBytes;
+    return mergedPdf;
+  }
+  function getPermutationString(permutations) {
+    var permutation_string = "";
+    for (let i = 0; i < permutations.length; i++) {
+      permutation_string += i + 1 + ": ";
+      for (const file of permutations[i]) {
+        permutation_string += file.name + ", ";
+      }
+      permutation_string += "\n";
+    }
+    return permutation_string;
   }
   generateButton.addEventListener("click", async () => {
     try {
       let n = numPermutations.valueAsNumber;
       let permutations = [];
-      let permuted_pdfs = [];
-      var title = ["", ""];
-      console.log(title);
-      if (includeTitle.checked) {
-        console.log(titleFile);
-        title = titleFile;
+      let permutedPdfBytes = [];
+      let title = [null, null];
+      if (includeTitle.checked && titleInput.files.length > 0) {
+        let file = titleInput.files[0];
+        let reader = new FileReader();
+        reader.onload = function(event) {
+          let arrayBuffer = event.target.result;
+          title = [file, arrayBuffer];
+        };
+        reader.readAsArrayBuffer(file);
       }
       for (let i = 1; i <= n; i++) {
         let permutation = (0, import_lodash.shuffle)(files);
         permutations.push(permutation.map((x) => x[0]));
-        console.log(title);
-        const mergedPdfBytes = await mergePDFs(
+        let mergedPdf = await mergePDFs(
           title[1],
           permutation.map((x) => x[1])
         );
-        permuted_pdfs.push([
-          i + ".pdf",
-          new Blob([mergedPdfBytes], { type: "application/pdf" })
-        ]);
-      }
-      const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
-      permuted_pdfs.forEach(async (pdf) => {
-        await zipWriter.add(pdf[0], new BlobReader(pdf[1]));
-      });
-      var permutation_string = "";
-      for (let i = 0; i < n; i++) {
-        permutation_string += i + 1 + ": ";
-        for (const file of permutations[i]) {
-          permutation_string += file.name + ", ";
+        let firstPage = mergedPdf.getPage(0);
+        const height = firstPage.getHeight();
+        const fontSize = 20;
+        firstPage.drawText(stampText.value + " " + i, {
+          x: stampOffset.valueAsNumber,
+          y: height - 2 * fontSize,
+          size: fontSize
+        });
+        if (makeEven.checked && mergedPdf.getPages().length % 2 != 0) {
+          mergedPdf.addPage();
         }
-        permutation_string += "\n";
+        const mergedPdfBytes = await mergedPdf.save();
+        permutedPdfBytes.push(mergedPdfBytes);
       }
-      zipWriter.add("permutation.txt", new TextReader(permutation_string));
-      const zipBlob = await zipWriter.close();
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(zipBlob);
-      link.download = "files.zip";
-      link.click();
+      if (!collapse.checked) {
+        const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
+        for (let i = 0; i < n; i++) {
+          let pdfName = i + 1 + ".pdf";
+          let pdfFile = new Blob([permutedPdfBytes[i]], {
+            type: "application/pdf"
+          });
+          await zipWriter.add(pdfName, new BlobReader(pdfFile));
+        }
+        zipWriter.add(
+          "permutation.txt",
+          new TextReader(getPermutationString(permutations))
+        );
+        const zipBlob = await zipWriter.close();
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(zipBlob);
+        link.download = "files.zip";
+        link.click();
+      } else {
+        let fullPdf = await mergePDFs(null, permutedPdfBytes);
+        let fullPdfBytes = await fullPdf.save();
+        let result = new Blob([fullPdfBytes], { type: "application/pdf" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(result);
+        link.download = "permutations.pdf";
+        link.click();
+        URL.revokeObjectURL(link.href);
+        const txt = new Blob([getPermutationString(permutations)], {
+          type: "text/plain"
+        });
+        const txtLink = document.createElement("a");
+        txtLink.download = "permutations.txt";
+        txtLink.href = URL.createObjectURL(txt);
+        txtLink.click();
+        URL.revokeObjectURL(txtLink.href);
+      }
     } catch (error2) {
       console.error("Error generating PDFs:", error2);
     }
