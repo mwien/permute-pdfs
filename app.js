@@ -106,14 +106,16 @@ generateButton.addEventListener("click", async () => {
         permutation.map((x) => x[1]),
       );
 
-      let firstPage = mergedPdf.getPage(0);
-      const height = firstPage.getHeight();
-      const fontSize = 20;
-      firstPage.drawText(stampText.value + " " + i, {
-        x: stampOffset.valueAsNumber,
-        y: height - 2 * fontSize,
-        size: fontSize,
-      });
+      if (includeStamp) {
+        let firstPage = mergedPdf.getPage(0);
+        const height = firstPage.getHeight();
+        const fontSize = 20;
+        firstPage.drawText(stampText.value + " " + i, {
+          x: stampOffset.valueAsNumber,
+          y: height - 2 * fontSize,
+          size: fontSize,
+        });
+      }
 
       if (makeEven.checked && mergedPdf.getPages().length % 2 != 0) {
         mergedPdf.addPage();
