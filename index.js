@@ -34964,6 +34964,12 @@
     }
     return permutation_string;
   }
+  var read = (blob) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(blob);
+  });
   generateButton.addEventListener("click", async () => {
     try {
       let n = numPermutations.valueAsNumber;
@@ -34972,16 +34978,13 @@
       let title = [null, null];
       if (includeTitle.checked && titleInput.files.length > 0) {
         let file = titleInput.files[0];
-        let reader = new FileReader();
-        reader.onload = function(event) {
-          let arrayBuffer = event.target.result;
-          title = [file, arrayBuffer];
-        };
-        reader.readAsArrayBuffer(file);
+        const arrayBuffer = await read(file);
+        title = [file, arrayBuffer];
       }
       for (let i = 1; i <= n; i++) {
         let permutation = (0, import_lodash.shuffle)(files);
         permutations.push(permutation.map((x) => x[0]));
+        console.log(title[1]);
         let mergedPdf = await mergePDFs(
           title[1],
           permutation.map((x) => x[1])
@@ -35010,7 +35013,7 @@
           await zipWriter.add(pdfName, new BlobReader(pdfFile));
         }
         zipWriter.add(
-          "permutation.txt",
+          "permutations.txt",
           new TextReader(getPermutationString(permutations))
         );
         const zipBlob = await zipWriter.close();

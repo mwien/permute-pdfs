@@ -76,22 +76,25 @@ function getPermutationString(permutations) {
   return permutation_string;
 }
 
+const read = (blob) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(blob);
+  });
+
 generateButton.addEventListener("click", async () => {
   try {
     let n = numPermutations.valueAsNumber;
     let permutations = [];
     let permutedPdfBytes = [];
+    // TODO: maybe just read title onchange and not just at generate button press
     let title = [null, null];
     if (includeTitle.checked && titleInput.files.length > 0) {
       let file = titleInput.files[0];
-      let reader = new FileReader();
-
-      reader.onload = function (event) {
-        let arrayBuffer = event.target.result;
-        title = [file, arrayBuffer];
-      };
-
-      reader.readAsArrayBuffer(file);
+      const arrayBuffer = await read(file);
+      title = [file, arrayBuffer];
     } // add error handling
     for (let i = 1; i <= n; i++) {
       let permutation = shuffle(files);
