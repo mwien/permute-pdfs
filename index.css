@@ -4,6 +4,18 @@
   min-height: 100vh;
 }
 
+@media screen and (min-width: 900px) {
+  .container {
+    width: 75%
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .container {
+    width: 50%
+  }
+}
+
 main {
   flex: 1;
 }
