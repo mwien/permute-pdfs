@@ -34914,6 +34914,7 @@
   var collapse = document.getElementById("collapse");
   var makeEven = document.getElementById("makeEven");
   var clearButton = document.getElementById("clear");
+  var processing = document.getElementById("processing");
   var generateButton = document.getElementById("generate-button");
   if (includeTitle.checked) {
     titleForm.style.display = "flex";
@@ -34923,10 +34924,10 @@
   }
   var files = [];
   pdfInput.addEventListener("change", function(event) {
-    let file = event.target.files[0];
-    let reader = new FileReader();
+    const file = event.target.files[0];
+    const reader = new FileReader();
     reader.onload = function(event2) {
-      let arrayBuffer = event2.target.result;
+      const arrayBuffer = event2.target.result;
       files.push([file, arrayBuffer]);
       const listItem = document.createElement("div");
       listItem.classList.add("filename");
@@ -34972,31 +34973,34 @@
   });
   generateButton.addEventListener("click", async () => {
     try {
-      let n = numPermutations.valueAsNumber;
-      let permutations = [];
-      let permutedPdfBytes = [];
+      const n = numPermutations.valueAsNumber;
+      const permutations = [];
+      const permutedPdfBytes = [];
       let title = [null, null];
       if (includeTitle.checked && titleInput.files.length > 0) {
-        let file = titleInput.files[0];
+        const file = titleInput.files[0];
         const arrayBuffer = await read(file);
         title = [file, arrayBuffer];
       }
       for (let i = 1; i <= n; i++) {
-        let permutation = (0, import_lodash.shuffle)(files);
+        processing.hidden = false;
+        processing.innerHTML = "Generating permutation " + i + "...";
+        const permutation = (0, import_lodash.shuffle)(files);
         permutations.push(permutation.map((x) => x[0]));
-        console.log(title[1]);
-        let mergedPdf = await mergePDFs(
+        const mergedPdf = await mergePDFs(
           title[1],
           permutation.map((x) => x[1])
         );
-        let firstPage = mergedPdf.getPage(0);
-        const height = firstPage.getHeight();
-        const fontSize = 20;
-        firstPage.drawText(stampText.value + " " + i, {
-          x: stampOffset.valueAsNumber,
-          y: height - 2 * fontSize,
-          size: fontSize
-        });
+        if (includeStamp.checked) {
+          const firstPage = mergedPdf.getPage(0);
+          const height = firstPage.getHeight();
+          const fontSize = 20;
+          firstPage.drawText(stampText.value + " " + i, {
+            x: stampOffset.valueAsNumber,
+            y: height - 2 * fontSize,
+            size: fontSize
+          });
+        }
         if (makeEven.checked && mergedPdf.getPages().length % 2 != 0) {
           mergedPdf.addPage();
         }
@@ -35004,10 +35008,11 @@
         permutedPdfBytes.push(mergedPdfBytes);
       }
       if (!collapse.checked) {
+        processing.innerHTML = "Creating zip file...";
         const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
         for (let i = 0; i < n; i++) {
-          let pdfName = i + 1 + ".pdf";
-          let pdfFile = new Blob([permutedPdfBytes[i]], {
+          const pdfName = i + 1 + ".pdf";
+          const pdfFile = new Blob([permutedPdfBytes[i]], {
             type: "application/pdf"
           });
           await zipWriter.add(pdfName, new BlobReader(pdfFile));
@@ -35022,9 +35027,10 @@
         link.download = "files.zip";
         link.click();
       } else {
-        let fullPdf = await mergePDFs(null, permutedPdfBytes);
-        let fullPdfBytes = await fullPdf.save();
-        let result = new Blob([fullPdfBytes], { type: "application/pdf" });
+        processing.innerHTML = "Collapse PDFs...";
+        const fullPdf = await mergePDFs(null, permutedPdfBytes);
+        const fullPdfBytes = await fullPdf.save();
+        const result = new Blob([fullPdfBytes], { type: "application/pdf" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(result);
         link.download = "permutations.pdf";
@@ -35039,6 +35045,7 @@
         txtLink.click();
         URL.revokeObjectURL(txtLink.href);
       }
+      processing.hidden = true;
     } catch (error2) {
       console.error("Error generating PDFs:", error2);
     }

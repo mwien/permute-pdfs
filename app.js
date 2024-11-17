@@ -2,20 +2,21 @@ import { PDFDocument } from "pdf-lib";
 import { shuffle } from "lodash";
 import { ZipWriter, BlobWriter, BlobReader, TextReader } from "@zip.js/zip.js";
 
-let pdfInput = document.getElementById("pdfInput");
-let fileList = document.getElementById("fileList");
-let numPermutations = document.getElementById("num_permutations");
-let includeTitle = document.getElementById("includeTitle");
-let titleForm = document.getElementById("titleForm");
-let titleInput = document.getElementById("titleInput");
-let includeStamp = document.getElementById("includeStamp");
-let stampForm = document.getElementById("stampForm");
-let stampOffset = document.getElementById("stampOffset");
-let stampText = document.getElementById("stampText");
-let collapse = document.getElementById("collapse");
-let makeEven = document.getElementById("makeEven");
-let clearButton = document.getElementById("clear");
-let generateButton = document.getElementById("generate-button");
+const pdfInput = document.getElementById("pdfInput");
+const fileList = document.getElementById("fileList");
+const numPermutations = document.getElementById("num_permutations");
+const includeTitle = document.getElementById("includeTitle");
+const titleForm = document.getElementById("titleForm");
+const titleInput = document.getElementById("titleInput");
+const includeStamp = document.getElementById("includeStamp");
+const stampForm = document.getElementById("stampForm");
+const stampOffset = document.getElementById("stampOffset");
+const stampText = document.getElementById("stampText");
+const collapse = document.getElementById("collapse");
+const makeEven = document.getElementById("makeEven");
+const clearButton = document.getElementById("clear");
+const processing = document.getElementById("processing");
+const generateButton = document.getElementById("generate-button");
 
 // initial settings for page reloads
 if (includeTitle.checked) {
@@ -29,11 +30,11 @@ if (includeStamp.checked) {
 let files = [];
 
 pdfInput.addEventListener("change", function (event) {
-  let file = event.target.files[0];
-  let reader = new FileReader();
+  const file = event.target.files[0];
+  const reader = new FileReader();
 
   reader.onload = function (event) {
-    let arrayBuffer = event.target.result;
+    const arrayBuffer = event.target.result;
     files.push([file, arrayBuffer]);
     const listItem = document.createElement("div");
     listItem.classList.add("filename"); // Apply the .filename styling
@@ -86,28 +87,30 @@ const read = (blob) =>
 
 generateButton.addEventListener("click", async () => {
   try {
-    let n = numPermutations.valueAsNumber;
-    let permutations = [];
-    let permutedPdfBytes = [];
+    const n = numPermutations.valueAsNumber;
+    const permutations = [];
+    const permutedPdfBytes = [];
     // TODO: maybe just read title onchange and not just at generate button press
     let title = [null, null];
     if (includeTitle.checked && titleInput.files.length > 0) {
-      let file = titleInput.files[0];
+      const file = titleInput.files[0];
       const arrayBuffer = await read(file);
       title = [file, arrayBuffer];
-    } // add error handling
+    } // TODO: add error handling
     for (let i = 1; i <= n; i++) {
-      let permutation = shuffle(files);
+      processing.hidden = false;
+      processing.innerHTML = "Generating permutation " + i + "...";
+      const permutation = shuffle(files);
       // store permutation of file names in permutations
       permutations.push(permutation.map((x) => x[0]));
       // merge pdfs in permutation order
-      let mergedPdf = await mergePDFs(
+      const mergedPdf = await mergePDFs(
         title[1],
         permutation.map((x) => x[1]),
       );
 
-      if (includeStamp) {
-        let firstPage = mergedPdf.getPage(0);
+      if (includeStamp.checked) {
+        const firstPage = mergedPdf.getPage(0);
         const height = firstPage.getHeight();
         const fontSize = 20;
         firstPage.drawText(stampText.value + " " + i, {
@@ -127,10 +130,11 @@ generateButton.addEventListener("click", async () => {
 
     if (!collapse.checked) {
       // write files to zip
+      processing.innerHTML = "Creating zip file...";
       const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
       for (let i = 0; i < n; i++) {
-        let pdfName = i + 1 + ".pdf";
-        let pdfFile = new Blob([permutedPdfBytes[i]], {
+        const pdfName = i + 1 + ".pdf";
+        const pdfFile = new Blob([permutedPdfBytes[i]], {
           type: "application/pdf",
         });
         await zipWriter.add(pdfName, new BlobReader(pdfFile));
@@ -149,9 +153,10 @@ generateButton.addEventListener("click", async () => {
       link.click();
     } else {
       // write files to single pdf
-      let fullPdf = await mergePDFs(null, permutedPdfBytes);
-      let fullPdfBytes = await fullPdf.save();
-      let result = new Blob([fullPdfBytes], { type: "application/pdf" });
+      processing.innerHTML = "Collapse PDFs...";
+      const fullPdf = await mergePDFs(null, permutedPdfBytes);
+      const fullPdfBytes = await fullPdf.save();
+      const result = new Blob([fullPdfBytes], { type: "application/pdf" });
 
       const link = document.createElement("a");
       link.href = URL.createObjectURL(result);
@@ -167,6 +172,7 @@ generateButton.addEventListener("click", async () => {
       txtLink.click();
       URL.revokeObjectURL(txtLink.href);
     }
+    processing.hidden = true;
   } catch (error) {
     console.error("Error generating PDFs:", error);
   }
