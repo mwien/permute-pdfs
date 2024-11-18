@@ -1,3 +1,3 @@
 # TODOs
 
-- seedable random generator/remove lodash
+- add error messages

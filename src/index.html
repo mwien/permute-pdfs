@@ -27,11 +27,14 @@
         <div class="content-container">
         <div class="formRow">
           <div>
-            <label for="pdfInput" class="custom-file-upload"> Upload PDF </label>
+            <label for="pdfInput" class="custom-file-upload"> Add PDF </label>
             <input type="file" id="pdfInput" name="pdfInput" accept=".pdf">
           </div>
           <div>
-            <label for="num_permutations"> Permutations: </label>
+            <label class="label-with-tooltip" for="num_permutations">
+                Permutations:
+                <span class="tooltip-content">Specify the number of permutations of the added PDFs, that are produced.</span>
+            </label>
             <input type="number" id="num_permutations" name="num_permutations" min="1" placeholder="10">
           </div>
         </div>
@@ -42,26 +45,45 @@
 
         <div class="formRow">
           <div>
-            <label for="includeTitle" title="Include title page"> Title </label>
+            <label class="label-with-tooltip" for="includeTitle" title="Include title page">
+                Title
+                <span class="tooltip-content">Include a title page, which is the first page of every permutation</span>
+            </label>
             <input type="checkbox" id="includeTitle" name="includeTitle">
           </div>
           <div>
-            <label for="includeStamp" title="Include stamp at the top of the first page"> Stamp </label>
+            <label class="label-with-tooltip" for="includeStamp">
+                Stamp
+                <span class="tooltip-content">Stamp a custom text on the first page of each permutation</span>
+            </label>
             <input type="checkbox" id="includeStamp" name="includeStamp">
           </div>
           <div>
-            <label for="collapse" title="Collapse all PDFs into a single file"> Collapse </label>
+            <label class="label-with-tooltip" for="collapse" >
+                Collapse
+                <span class="tooltip-content">Collapse all permutations into one PDF file. If not set, a zip-archive is produced.</span>
+            </label>
             <input type="checkbox" id="collapse" name="collapse">
           </div>
           <div>
-            <label for="makeEven" title="Make the number of pages per permutation even by inserting a blank page at the end"> Even </label>
+            <label class="label-with-tooltip" for="makeEven" >
+                Even
+                <span class="tooltip-content">Makes the number of pages per permutation even, by adding a blank page at the end.</span>
+            </label>
             <input type="checkbox" id="makeEven" name="makeEven">
+          </div>
+          <div>
+            <label class="label-with-tooltip" for="addSeed" >
+                Seed
+                <span class="tooltip-content">Add a seed for reproducability. Choosing the same seed, yields exactly the same permutations.</span>
+            </label>
+            <input type="checkbox" id="addSeed" name="addSeed">
           </div>
         </div>
 
         <div class="formRow" id="titleForm" style="display:none">
           <div>
-            <label for="titleInput" class="custom-file-upload"> Upload Title Page </label>
+            <label for="titleInput" class="custom-file-upload"> Add Title Page </label>
             <input type="file" id="titleInput" name="titleInput" accept=".pdf">
           </div>
           <div class="filename" id="titleFilename">&nbsp;</div>
@@ -69,12 +91,28 @@
 
         <div class="formRow" id="stampForm" style="display:none">
           <div>
-            <label for="stampText"> Stamp</label>
+            <label class="label-with-tooltip" for="stampText">
+                Stamp
+                <span class="tooltip-content">The text of the stamp. The number of the permutation is automatically after this text.</span>
+            </label>
             <input type="text" id="stampText" name="stampText" placeholder="Permutation">
           </div>
           <div>
-            <label for="stampOffset"> Offset </label>
-            <input type="number" id="stampOffset" name="stampOffset" min="0" placeholder="250">
+            <label class="label-with-tooltip" for="stampOffset">
+                Offset
+                <span class="tooltip-content">The offset of the stamp from the left margin in percent of page width.</span>
+            </label>
+            <input type="number" id="stampOffset" name="stampOffset" min="0" placeholder="50">
+          </div>
+        </div>
+
+        <div class="formRow" id="seedForm" style="display:none">
+          <div>
+            <label class="label-with-tooltip" for="seedInput">
+                Seed
+                <span class="tooltip-content">The seed can be any number.</span>
+            </label>
+            <input type="number" id="seedInput" name="seedInput" min="0" placeholder="123456">
           </div>
         </div>
 
@@ -117,13 +155,7 @@
         <div class="faq-item">
             <div class="faq-question"> How are the random permutations generated? </div>
               <div class="faq-answer">
-                <p> This is done in JavaScript using pseudo-random generators, more precisely the shuffle function provided by lodash (link). It should be sufficiently random for most applications and behave similarly to randomly sampled permutations in other languages such as R, Python etc.</p>
-            </div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question"> Is it possible to seed the random generator in order to reproduce permutations? </div>
-              <div class="faq-answer">
-                <p> No, this is unfortunately not possible at the moment, but may be added later if requested. </p>
+                <p> This is done in JavaScript using the Fisher-Yates shuffle with the seedrandom random number generator. It should be sufficiently random for most applications and behave similarly to randomly sampled permutations in other languages such as R or Python.</p>
             </div>
         </div>
       </div>

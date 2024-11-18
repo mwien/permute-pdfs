@@ -136,7 +136,7 @@ input[type=text] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-width: 120px;
+  min-width: 150px;
 }
 
 /* Label styling */
@@ -229,6 +229,31 @@ button {
 
 .faq-item.active .faq-question::after {
     content: "-";
+}
+
+.label-with-tooltip {
+  position: relative;
+  cursor: pointer;
+}
+
+.tooltip-content {
+  display: none;
+  position: absolute;
+  top: -40px; /* Adjust based on your design */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.label-with-tooltip:hover .tooltip-content {
+  display: block;
 }
 
 html {

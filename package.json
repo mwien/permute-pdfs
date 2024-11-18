@@ -19,6 +19,7 @@
   "dependencies": {
     "@zip.js/zip.js": "^2.7.53",
     "lodash": "^4.17.21",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "seedrandom": "^3.0.5"
   }
 }
