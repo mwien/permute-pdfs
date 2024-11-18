@@ -81,13 +81,14 @@ input[type=file] {
 
 input[type=number] {
     margin: 10px auto;
-    padding: 4px 4px;
+    padding: 6px 6px;
     margin: 5px 5px;
     border: 2px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
     transition: border-color 0.3s ease;
     width: 80px;
+    font-size: 14px;
 }
 
 input[type=file]:hover {
@@ -103,12 +104,13 @@ input[type=checkbox] {
 }
 
 input[type=text] {
-    padding: 4px 4px;
+    padding: 6px 6px;
     border: 2px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
     transition: border-color 0.3s ease;
     width: 100px;
+    font-size: 14px;
 }
 
 #fileList {
