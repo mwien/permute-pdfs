@@ -8,6 +8,7 @@ const numPermutations = document.getElementById("num_permutations");
 const includeTitle = document.getElementById("includeTitle");
 const titleForm = document.getElementById("titleForm");
 const titleInput = document.getElementById("titleInput");
+const titleFilename = document.getElementById("titleFilename");
 const includeStamp = document.getElementById("includeStamp");
 const stampForm = document.getElementById("stampForm");
 const stampOffset = document.getElementById("stampOffset");
@@ -18,16 +19,23 @@ const clearButton = document.getElementById("clear");
 const processing = document.getElementById("processing");
 const generateButton = document.getElementById("generate-button");
 
-// initial settings for page reloads
-if (includeTitle.checked) {
-  titleForm.style.display = "flex";
-}
-
-if (includeStamp.checked) {
-  stampForm.style.display = "flex";
-}
-
 let files = [];
+
+window.onload = function () {
+  // initial settings for page reloads
+  if (includeTitle.checked) {
+    titleForm.style.display = "flex";
+  }
+
+  if (includeStamp.checked) {
+    stampForm.style.display = "flex";
+  }
+
+  pdfInput.value = null;
+  titleInput.value = null;
+
+  generateButton.disabled = files.length === 0;
+};
 
 pdfInput.addEventListener("change", function (event) {
   const file = event.target.files[0];
@@ -38,12 +46,12 @@ pdfInput.addEventListener("change", function (event) {
     files.push([file, arrayBuffer]);
     const listItem = document.createElement("div");
     listItem.classList.add("filename"); // Apply the .filename styling
-    listItem.textContent = `${file.name}`;
+    listItem.textContent = file.name;
     fileList.appendChild(listItem);
   };
 
   reader.readAsArrayBuffer(file);
-  this.value = null;
+  pdfInput.value = null;
   generateButton.disabled = files.length === 0;
 });
 
@@ -98,8 +106,7 @@ generateButton.addEventListener("click", async () => {
       title = [file, arrayBuffer];
     } // TODO: add error handling
     for (let i = 1; i <= n; i++) {
-      processing.hidden = false;
-      processing.innerHTML = "Generating permutation " + i + "...";
+      processing.innerHTML = "Permutation " + i + "...";
       const permutation = shuffle(files);
       // store permutation of file names in permutations
       permutations.push(permutation.map((x) => x[0]));
@@ -172,7 +179,7 @@ generateButton.addEventListener("click", async () => {
       txtLink.click();
       URL.revokeObjectURL(txtLink.href);
     }
-    processing.hidden = true;
+    processing.innerHTML = "";
   } catch (error) {
     console.error("Error generating PDFs:", error);
   }
@@ -180,7 +187,13 @@ generateButton.addEventListener("click", async () => {
 
 clearButton.addEventListener("click", () => {
   files = [];
+  pdfInput.value = null;
+  titleInput.value = null;
+  titleFilename.innerHTML = "&nbsp;";
+  const span = document.createElement("span");
+  span.innerHTML = "Files: ";
   fileList.innerHTML = "";
+  fileList.appendChild(span);
 });
 
 includeTitle.addEventListener("change", () => {
@@ -197,6 +210,10 @@ includeStamp.addEventListener("change", () => {
   } else {
     stampForm.style.display = "none";
   }
+});
+
+titleInput.addEventListener("change", function (event) {
+  titleFilename.innerHTML = event.target.files[0].name;
 });
 
 document.querySelectorAll(".faq-question").forEach((question) => {

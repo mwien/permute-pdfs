@@ -34907,6 +34907,7 @@
   var includeTitle = document.getElementById("includeTitle");
   var titleForm = document.getElementById("titleForm");
   var titleInput = document.getElementById("titleInput");
+  var titleFilename = document.getElementById("titleFilename");
   var includeStamp = document.getElementById("includeStamp");
   var stampForm = document.getElementById("stampForm");
   var stampOffset = document.getElementById("stampOffset");
@@ -34916,13 +34917,18 @@
   var clearButton = document.getElementById("clear");
   var processing = document.getElementById("processing");
   var generateButton = document.getElementById("generate-button");
-  if (includeTitle.checked) {
-    titleForm.style.display = "flex";
-  }
-  if (includeStamp.checked) {
-    stampForm.style.display = "flex";
-  }
   var files = [];
+  window.onload = function() {
+    if (includeTitle.checked) {
+      titleForm.style.display = "flex";
+    }
+    if (includeStamp.checked) {
+      stampForm.style.display = "flex";
+    }
+    pdfInput.value = null;
+    titleInput.value = null;
+    generateButton.disabled = files.length === 0;
+  };
   pdfInput.addEventListener("change", function(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -34931,11 +34937,11 @@
       files.push([file, arrayBuffer]);
       const listItem = document.createElement("div");
       listItem.classList.add("filename");
-      listItem.textContent = `${file.name}`;
+      listItem.textContent = file.name;
       fileList.appendChild(listItem);
     };
     reader.readAsArrayBuffer(file);
-    this.value = null;
+    pdfInput.value = null;
     generateButton.disabled = files.length === 0;
   });
   async function appendPDF(toPdf, fromPdf) {
@@ -34983,8 +34989,7 @@
         title = [file, arrayBuffer];
       }
       for (let i = 1; i <= n; i++) {
-        processing.hidden = false;
-        processing.innerHTML = "Generating permutation " + i + "...";
+        processing.innerHTML = "Permutation " + i + "...";
         const permutation = (0, import_lodash.shuffle)(files);
         permutations.push(permutation.map((x) => x[0]));
         const mergedPdf = await mergePDFs(
@@ -35045,14 +35050,20 @@
         txtLink.click();
         URL.revokeObjectURL(txtLink.href);
       }
-      processing.hidden = true;
+      processing.innerHTML = "";
     } catch (error2) {
       console.error("Error generating PDFs:", error2);
     }
   });
   clearButton.addEventListener("click", () => {
     files = [];
+    pdfInput.value = null;
+    titleInput.value = null;
+    titleFilename.innerHTML = "&nbsp;";
+    const span = document.createElement("span");
+    span.innerHTML = "Files: ";
     fileList.innerHTML = "";
+    fileList.appendChild(span);
   });
   includeTitle.addEventListener("change", () => {
     if (includeTitle.checked) {
@@ -35067,6 +35078,9 @@
     } else {
       stampForm.style.display = "none";
     }
+  });
+  titleInput.addEventListener("change", function(event) {
+    titleFilename.innerHTML = event.target.files[0].name;
   });
   document.querySelectorAll(".faq-question").forEach((question) => {
     question.addEventListener("click", () => {

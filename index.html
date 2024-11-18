@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PDF Permutations</title>
     <link rel="stylesheet" href="index.css">
     <script src="index.js" defer></script>
@@ -9,7 +10,7 @@
   <body>
     <div class="container">
       <header>
-        <h1>PDF Permutations</h1>
+        <h2>PDF Permutations</h2>
       </header>
       <main>
         <div class="content-container">
@@ -18,15 +19,21 @@
             <ol>
               <li>Upload your files.</li>
               <li>Specify the number of permutations.</li>
-              <li>Press "Generate Permutations".</li>
+              <li>Press "Generate".</li>
             </ol>
           </p>
         </div>
 
         <div class="content-container">
         <div class="formRow">
-          <label for "pdfInput"> Upload PDFs </label>
-          <input type="file" id="pdfInput" name="pdfInput" accept=".pdf">
+          <div>
+            <label for="pdfInput" class="custom-file-upload"> Upload PDF </label>
+            <input type="file" id="pdfInput" name="pdfInput" accept=".pdf">
+          </div>
+          <div>
+            <label for="num_permutations"> Permutations: </label>
+            <input type="number" id="num_permutations" name="num_permutations" min="1">
+          </div>
         </div>
 
         <div id="fileList">
@@ -34,57 +41,58 @@
         </div>
 
         <div class="formRow">
-          <label for "num_permutations"> Number of Permutations: </label>
-          <input type="number" id="num_permutations" name="num_permutations" min="1">
-        </div>
-
-        <div class="formRow">
-
           <div>
-            <label for "includeTitle"> Title Page </label>
+            <label for="includeTitle" title="Include title page"> Title </label>
             <input type="checkbox" id="includeTitle" name="includeTitle">
           </div>
           <div>
-            <label for "includeStamp"> Stamp </label>
+            <label for="includeStamp" title="Include stamp at the top of the first page"> Stamp </label>
             <input type="checkbox" id="includeStamp" name="includeStamp">
           </div>
           <div>
-            <label for "collapse"> Collapse to PDF </label>
+            <label for="collapse" title="Collapse all PDFs into a single file"> Collapse </label>
             <input type="checkbox" id="collapse" name="collapse">
           </div>
           <div>
-            <label for "makeEven"> Even pages </label>
+            <label for="makeEven" title="Make the number of pages per permutation even by inserting a blank page at the end"> Even </label>
             <input type="checkbox" id="makeEven" name="makeEven">
           </div>
         </div>
 
         <div class="formRow" id="titleForm" style="display:none">
-          <label for "titleInput"> Upload Title Page </label>
-          <input type="file" id="titleInput" name="titleInput" accept=".pdf">
+          <div>
+            <label for="titleInput" class="custom-file-upload"> Upload Title Page </label>
+            <input type="file" id="titleInput" name="titleInput" accept=".pdf">
+          </div>
+          <div class="filename" id="titleFilename">&nbsp;</div>
         </div>
 
         <div class="formRow" id="stampForm" style="display:none">
-          <label for "stampOffset"> Stamp Offset </label>
-          <input type="number" id="stampOffset" name="stampOffset" min="0">
-          <label for "stampText"> Stamp Text </label>
-          <input type="text" id="stampText" name="stampText">
+          <div>
+            <label for="stampText"> Stamp</label>
+            <input type="text" id="stampText" name="stampText">
+          </div>
+          <div>
+            <label for="stampOffset"> Offset </label>
+            <input type="number" id="stampOffset" name="stampOffset" min="0">
+          </div>
         </div>
 
         <div class="formRow">
-          <button id="clear"> Clear Files </button>
-          <span id="processing" hidden></span>
-          <button id="generate-button" disabled> Generate Permutations </button>
+          <button id="clear"> Clear </button>
+          <div id="processing"></div>
+          <button id="generate-button" disabled> Generate </button>
         </div>
         </div>
 
         <div class="content-container">
-        <h2>Frequently Asked Questions</h2>
+        <h3>Frequently Asked Questions</h3>
 
         <div class="faq-item">
             <div class="faq-question">How does this work?</div>
               <div class="faq-answer">
-                <p> You can upload some PDFs and generate a specified number of permutations of those PDFs. So if you upload four PDF files and request six permutations, this will generate a zip file with six PDFs files, each consisting of the four PDFs in random order, and a text file which lists the permutations. </p>
-                <p>Further, you can add a title page, which will prepend every permutation, add a stamp on the first page and also collapse everything into a single PDF file (in this case consider setting the option of making the number of pages per permutation even if you want to print two-sided). </p>
+                <p> You can upload a bunch of PDFs and generate a specified number of permutations of those PDFs. For example, if you upload four PDF files and request six permutations, this will generate a zip file with six PDFs files, each consisting of the four PDFs in random order, and a text file which lists the permutations. </p>
+                <p>Further, you can add a title page, which will be at the beginning of every permutation, add a stamp on the first page and also collapse everything into a single PDF file (in this case consider setting the option of making the number of pages per permutation even if you want to print two-sided). </p>
             </div>
         </div>
 
@@ -97,11 +105,11 @@
         <div class="faq-item">
             <div class="faq-question">What about the privacy of my documents?</div>
               <div class="faq-answer">
-                <p> Everything you enter on this page is completely private and does not even leave your device. </p>
+                <p> Everything you enter on this page is completely private and does not leave your device. </p>
             </div>
         </div>
         <div class="faq-item">
-            <div class="faq-question">I need a slightly different feature than what is offered here. Can this be added? </div>
+            <div class="faq-question">I need a slightly different feature than what is offered here. Is it possible to add it? </div>
               <div class="faq-answer">
               <p> Yes, please open an issue <a href="https://github.com/mwien/permute-pdfs/issues">here</a>. The same holds if you encounter any other problems. </p>
             </div>
@@ -121,8 +129,7 @@
       </div>
       </main>
       <footer>
-        &#x1F582; marcel.wienoebst@gmx.de <br>
-        &copy; 2024 Marcel Wienöbst. All rights reserved.
+        <p>&copy; 2024 <a href="mailto:marcel.wienoebst@gmx.de">Marcel Wienöbst</a>. All rights reserved.</p>
       </footer>
     </div>
   </body>
