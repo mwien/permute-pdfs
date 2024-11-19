@@ -268,7 +268,7 @@ button {
 .tooltip-content {
   display: none;
   position: absolute;
-  top: 40px;
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #333;
