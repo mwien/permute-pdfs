@@ -107,6 +107,10 @@ input[type="file"] {
   font-weight: normal;
 }
 
+.custom-file-upload:hover {
+  background-color: #f1f5f9;
+}
+
 input[type="number"] {
   padding: 6px;
   margin: 5px;
@@ -116,6 +120,10 @@ input[type="number"] {
   transition: border-color 0.3s ease;
   width: 80px;
   font-size: 14px;
+}
+
+input[type="number"]:hover {
+  border: 2px solid #94a3b8;
 }
 
 input[type="file"]:hover {
@@ -139,6 +147,10 @@ input[type="text"] {
   transition: border-color 0.3s ease;
   width: 100px;
   font-size: 14px;
+}
+
+input[type="text"]:hover {
+  border: 2px solid #94a3b8;
 }
 
 #file-list {
