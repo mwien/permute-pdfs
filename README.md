@@ -1,3 +1,3 @@
-# TODOs
+# PDF Permutations
 
-- add error messages
+A simple static webpage to generate random permutations of PDF documents.

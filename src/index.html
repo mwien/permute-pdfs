@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>PDF Permutations</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <script src="main.js" defer></script>
   </head>
   <body>
@@ -15,153 +15,273 @@
       <main>
         <div class="content-container">
           <p>
-            <b> Easily generate randomly permuted PDF documents! For a quick start: </b>
-            <ol>
-              <li>Upload your files.</li>
-              <li>Specify the number of permutations.</li>
-              <li>Press »Generate«.</li>
-            </ol>
+            <b>
+              Easily generate randomly permuted PDF documents! For a quick
+              start:
+            </b>
           </p>
+          <ol>
+            <li>Upload your files.</li>
+            <li>Specify the number of permutations.</li>
+            <li>Press »Generate«.</li>
+          </ol>
         </div>
 
         <div class="content-container">
-        <div class="formRow">
-          <div>
-            <label for="pdfInput" class="custom-file-upload"> Add PDF </label>
-            <input type="file" id="pdfInput" name="pdfInput" accept=".pdf">
-          </div>
-          <div>
-            <label class="label-with-tooltip" for="num_permutations">
+          <div class="form-row">
+            <div>
+              <label for="pdf-input" class="custom-file-upload">
+                Add PDF
+              </label>
+              <input
+                type="file"
+                id="pdf-input"
+                name="pdf-input"
+                accept=".pdf"
+              />
+            </div>
+            <div>
+              <label class="label-with-tooltip" for="num-permutations">
                 Permutations:
-                <span class="tooltip-content">Specify the number of permutations of the added PDFs, that are produced.</span>
-            </label>
-            <input type="number" id="num_permutations" name="num_permutations" min="1" placeholder="10">
+                <span class="tooltip-content">
+                  Specify the number of permutations of the added PDFs, that are
+                  produced.
+                </span>
+              </label>
+              <input
+                type="number"
+                id="num-permutations"
+                name="num-permutations"
+                min="1"
+                placeholder="10"
+              />
+            </div>
           </div>
-        </div>
 
-        <div id="fileList">
-          <span> Files: </span>
-        </div>
+          <div id="file-list">
+            <span> Files: </span>
+          </div>
 
-        <div class="formRow">
-          <div>
-            <label class="label-with-tooltip" for="includeTitle" title="Include title page">
+          <div class="form-row">
+            <div>
+              <label
+                class="label-with-tooltip"
+                for="include-title"
+                title="Include title page"
+              >
                 Title
-                <span class="tooltip-content">Include a title page, which is the first page of every permutation</span>
-            </label>
-            <input type="checkbox" id="includeTitle" name="includeTitle">
-          </div>
-          <div>
-            <label class="label-with-tooltip" for="includeStamp">
+                <span class="tooltip-content">
+                  Include a title page, which is the first page of every
+                  permutation
+                </span>
+              </label>
+              <input type="checkbox" id="include-title" name="include-title" />
+            </div>
+            <div>
+              <label class="label-with-tooltip" for="include-stamp">
                 Stamp
-                <span class="tooltip-content">Stamp a custom text on the first page of each permutation</span>
-            </label>
-            <input type="checkbox" id="includeStamp" name="includeStamp">
-          </div>
-          <div>
-            <label class="label-with-tooltip" for="collapse" >
+                <span class="tooltip-content">
+                  Stamp a custom text on the first page of each permutation
+                </span>
+              </label>
+              <input type="checkbox" id="include-stamp" name="include-stamp" />
+            </div>
+            <div>
+              <label class="label-with-tooltip" for="collapse">
                 Collapse
-                <span class="tooltip-content">Collapse all permutations into one PDF file. If not set, a zip-archive is produced.</span>
-            </label>
-            <input type="checkbox" id="collapse" name="collapse">
-          </div>
-          <div>
-            <label class="label-with-tooltip" for="makeEven" >
+                <span class="tooltip-content">
+                  Collapse all permutations into one PDF file. If not set, a
+                  zip-archive is produced.
+                </span>
+              </label>
+              <input type="checkbox" id="collapse" name="collapse" />
+            </div>
+            <div>
+              <label class="label-with-tooltip" for="make-even">
                 Even
-                <span class="tooltip-content">Makes the number of pages per permutation even, by adding a blank page at the end.</span>
-            </label>
-            <input type="checkbox" id="makeEven" name="makeEven">
-          </div>
-          <div>
-            <label class="label-with-tooltip" for="addSeed" >
+                <span class="tooltip-content">
+                  Makes the number of pages per permutation even, by adding a
+                  blank page at the end.
+                </span>
+              </label>
+              <input type="checkbox" id="make-even" name="make-even" />
+            </div>
+            <div>
+              <label class="label-with-tooltip" for="add-seed">
                 Seed
-                <span class="tooltip-content">Add a seed for reproducability. Choosing the same seed, yields exactly the same permutations.</span>
-            </label>
-            <input type="checkbox" id="addSeed" name="addSeed">
+                <span class="tooltip-content">
+                  Add a seed for reproducability. Choosing the same seed, yields
+                  exactly the same permutations.
+                </span>
+              </label>
+              <input type="checkbox" id="add-seed" name="add-seed" />
+            </div>
           </div>
-        </div>
 
-        <div class="formRow" id="titleForm" style="display:none">
-          <div>
-            <label for="titleInput" class="custom-file-upload"> Add Title Page </label>
-            <input type="file" id="titleInput" name="titleInput" accept=".pdf">
+          <div class="form-row" id="title-form" style="display: none">
+            <div>
+              <label for="title-input" class="custom-file-upload">
+                Add Title Page
+              </label>
+              <input
+                type="file"
+                id="title-input"
+                name="title-input"
+                accept=".pdf"
+              />
+            </div>
+            <div class="filename" id="title-filename">&nbsp;</div>
           </div>
-          <div class="filename" id="titleFilename">&nbsp;</div>
-        </div>
 
-        <div class="formRow" id="stampForm" style="display:none">
-          <div>
-            <label class="label-with-tooltip" for="stampText">
+          <div class="form-row" id="stamp-form" style="display: none">
+            <div>
+              <label class="label-with-tooltip" for="stamp-text">
                 Stamp
-                <span class="tooltip-content">The text of the stamp. The number of the permutation is automatically after this text.</span>
-            </label>
-            <input type="text" id="stampText" name="stampText" placeholder="Permutation">
-          </div>
-          <div>
-            <label class="label-with-tooltip" for="stampOffset">
+                <span class="tooltip-content">
+                  The text of the stamp. The number of the permutation is
+                  automatically after this text.
+                </span>
+              </label>
+              <input
+                type="text"
+                id="stamp-text"
+                name="stamp-text"
+                placeholder="Permutation"
+              />
+            </div>
+            <div>
+              <label class="label-with-tooltip" for="stamp-offset">
                 Offset
-                <span class="tooltip-content">The offset of the stamp from the left margin in percent of page width.</span>
-            </label>
-            <input type="number" id="stampOffset" name="stampOffset" min="0" placeholder="50">
+                <span class="tooltip-content">
+                  The offset of the stamp from the left margin in percent of
+                  page width.
+                </span>
+              </label>
+              <input
+                type="number"
+                id="stamp-offset"
+                name="stamp-offset"
+                min="0"
+                placeholder="50"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="formRow" id="seedForm" style="display:none">
-          <div>
-            <label class="label-with-tooltip" for="seedInput">
+          <div class="form-row" id="seed-form" style="display: none">
+            <div>
+              <label class="label-with-tooltip" for="seed-input">
                 Seed
                 <span class="tooltip-content">The seed can be any number.</span>
-            </label>
-            <input type="number" id="seedInput" name="seedInput" min="0" placeholder="123456">
+              </label>
+              <input
+                type="number"
+                id="seed-input"
+                name="seed-input"
+                min="0"
+                placeholder="123456"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <button id="clear">Clear</button>
+            <div id="processing"></div>
+            <button id="generate-button" disabled>Generate</button>
           </div>
         </div>
 
-        <div class="formRow">
-          <button id="clear"> Clear </button>
-          <div id="processing"></div>
-          <button id="generate-button" disabled> Generate </button>
-        </div>
-        </div>
-
         <div class="content-container">
-        <h3>Frequently Asked Questions</h3>
+          <h3>Frequently Asked Questions</h3>
 
-        <div class="faq-item">
-            <div class="faq-question">How does this work?</div>
-              <div class="faq-answer">
-                <p> You can upload a bunch of PDFs and generate a specified number of permutations of those PDFs. For example, if you upload four PDF files and request six permutations, this will generate a zip file with six PDFs files, each consisting of the four PDFs in random order, and a text file which lists the permutations. </p>
-                <p>Further, you can add a title page, which will be at the beginning of every permutation, add a stamp on the first page and also collapse everything into a single PDF file (in this case consider setting the option of making the number of pages per permutation even if you want to print two-sided). </p>
+          <div class="faq-item">
+            <div class="faq-question">How do I use this site?</div>
+            <div class="faq-answer">
+              <p>
+                You can upload a bunch of PDFs and generate a specified number
+                of permutations of those PDFs. For example, if you upload four
+                PDF files and request six permutations, this will generate a zip
+                file with six PDFs files, each consisting of the four PDFs in
+                random order, and a text file which lists the permutations.
+              </p>
+              <p>
+                Further, you can add a title page, which will be at the
+                beginning of every permutation, add a stamp on the first page
+                and also collapse everything into a single PDF file (in this
+                case consider setting the option of making the number of pages
+                per permutation even if you want to print two-sided).
+              </p>
             </div>
-        </div>
+          </div>
 
-        <div class="faq-item">
-            <div class="faq-question">What are some potential use cases of this website?</div>
-              <div class="faq-answer">
-                <p> You could create random orders for questionaires in studies or for tasks in an exam. Maybe you come up with other use cases that I can add to this list. </p>
+          <div class="faq-item">
+            <div class="faq-question">
+              What are some potential use cases of this website?
             </div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question">What about the privacy of my documents?</div>
-              <div class="faq-answer">
-                <p> Everything you enter on this page is completely private and does not leave your device. </p>
+            <div class="faq-answer">
+              <p>
+                You could create random orders for questionaires in studies or
+                for tasks in an exam. Maybe you come up with other use cases
+                that I can add to this list.
+              </p>
             </div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question">I need a slightly different feature than what is offered here. Is it possible to add it? </div>
-              <div class="faq-answer">
-              <p> Yes, please open an issue <a href="https://github.com/mwien/permute-pdfs/issues">here</a>. The same holds if you encounter any other problems. </p>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              What about the privacy of my documents?
             </div>
-        </div>
-        <div class="faq-item">
-            <div class="faq-question"> How are the random permutations generated? </div>
-              <div class="faq-answer">
-                <p> This is done in JavaScript using the Fisher-Yates shuffle with the seedrandom random number generator. It should be sufficiently random for most applications and behave similarly to randomly sampled permutations in other languages such as R or Python.</p>
+            <div class="faq-answer">
+              <p>
+                Everything you enter on this page is completely private and does
+                not leave your device.
+              </p>
             </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              I need a slightly different feature than what is offered here. Is
+              it possible to add it?
+            </div>
+            <div class="faq-answer">
+              <p>
+                Yes, please open an issue
+                <a href="https://github.com/mwien/permute-pdfs/issues">here</a>.
+                The same holds if you encounter any other problems.
+              </p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">
+              How are the random permutations generated?
+            </div>
+            <div class="faq-answer">
+              <p>
+                This is done in JavaScript using the Fisher-Yates shuffle with
+                the seedrandom random number generator. It should be
+                sufficiently random for most applications and behave similarly
+                to randomly sampled permutations in other languages such as R or
+                Python.
+              </p>
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-question">What is a seed?</div>
+            <div class="faq-answer">
+              <p>
+                A seed ensures that the permutations can be reproduced easily.
+                Using the same seed, will always produce the same results.
+                However, I would advise against overly relying on this feature
+                and to always check the generated permutations.txt text file.
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
       </main>
       <footer>
-        <p>&copy; 2024 <a href="mailto:marcel.wienoebst@gmx.de">Marcel Wienöbst</a>. All rights reserved.</p>
+        <p>
+          &copy; 2024
+          <a href="mailto:marcel.wienoebst@gmx.de">Marcel Wienöbst</a>. All
+          rights reserved.
+        </p>
       </footer>
     </div>
   </body>

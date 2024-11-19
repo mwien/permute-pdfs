@@ -2,22 +2,22 @@ import { PDFDocument } from "pdf-lib";
 import { ZipWriter, BlobWriter, BlobReader, TextReader } from "@zip.js/zip.js";
 import * as seedrandom from "seedrandom";
 
-const pdfInput = document.getElementById("pdfInput");
-const fileList = document.getElementById("fileList");
-const numPermutations = document.getElementById("num_permutations");
-const includeTitle = document.getElementById("includeTitle");
-const titleForm = document.getElementById("titleForm");
-const titleInput = document.getElementById("titleInput");
-const titleFilename = document.getElementById("titleFilename");
-const includeStamp = document.getElementById("includeStamp");
-const stampForm = document.getElementById("stampForm");
-const stampOffset = document.getElementById("stampOffset");
-const stampText = document.getElementById("stampText");
+const pdfInput = document.getElementById("pdf-input");
+const fileList = document.getElementById("file-list");
+const numPermutations = document.getElementById("num-permutations");
+const includeTitle = document.getElementById("include-title");
+const titleForm = document.getElementById("title-form");
+const titleInput = document.getElementById("title-input");
+const titleFilename = document.getElementById("title-filename");
+const includeStamp = document.getElementById("include-stamp");
+const stampForm = document.getElementById("stamp-form");
+const stampOffset = document.getElementById("stamp-offset");
+const stampText = document.getElementById("stamp-text");
 const collapse = document.getElementById("collapse");
-const makeEven = document.getElementById("makeEven");
-const addSeed = document.getElementById("addSeed");
-const seedForm = document.getElementById("seedForm");
-const seedInput = document.getElementById("seedInput");
+const makeEven = document.getElementById("make-even");
+const addSeed = document.getElementById("add-seed");
+const seedForm = document.getElementById("seed-form");
+const seedInput = document.getElementById("seed-input");
 const clearButton = document.getElementById("clear");
 const processing = document.getElementById("processing");
 const generateButton = document.getElementById("generate-button");
@@ -25,7 +25,6 @@ const generateButton = document.getElementById("generate-button");
 let files = [];
 
 window.onload = function () {
-  // initial settings for page reloads
   if (includeTitle.checked) {
     titleForm.style.display = "flex";
   }
@@ -52,7 +51,7 @@ pdfInput.addEventListener("change", function (event) {
     const arrayBuffer = event.target.result;
     files.push([file, arrayBuffer]);
     const listItem = document.createElement("div");
-    listItem.classList.add("filename"); // Apply the .filename styling
+    listItem.classList.add("filename");
     listItem.textContent = file.name;
     fileList.appendChild(listItem);
   };
@@ -64,15 +63,11 @@ pdfInput.addEventListener("change", function (event) {
 
 function seededShuffle(arrayIn, rng) {
   const array = [...arrayIn];
-  // Implement Fisher-Yates Shuffle // TODO: check this
+  // Fisher-Yates Shuffle
   for (let i = array.length - 1; i > 0; i--) {
-    // Generate a random index using the seeded RNG
     const j = Math.floor(rng() * (i + 1));
-
-    // Swap elements at i and j
     [array[i], array[j]] = [array[j], array[i]];
   }
-
   return array;
 }
 
@@ -116,23 +111,31 @@ const read = (blob) =>
 
 generateButton.addEventListener("click", async () => {
   try {
-    const n = numPermutations.valueAsNumber;
+    let n = numPermutations.valueAsNumber;
+    if (Number.isNaN(n)) {
+      console.log(
+        "Did not receive number of permutations, choose default value 10",
+      );
+      n = 10;
+    }
     const permutations = [];
     const permutedPdfBytes = [];
-    // Create a seeded random number generator
-    let seed = "";
+    let rng;
     if (addSeed.checked) {
-      seed = seedInput.value;
+      const seed = seedInput.valueAsNumber;
+      if (Number.isNaN(seed)) {
+        console.log("Did not receive seed even though one was specified!");
+      }
+      rng = seedrandom.default(seed);
+    } else {
+      rng = seedrandom.default();
     }
-    const rng = seedrandom.default(seed);
-    console.log(rng());
-    // TODO: maybe just read title onchange and not just at generate button press
     let title = [null, null];
     if (includeTitle.checked && titleInput.files.length > 0) {
       const file = titleInput.files[0];
-      const arrayBuffer = await read(file);
+      const arrayBuffer = await read(file); // alternatively, read onchange
       title = [file, arrayBuffer];
-    } // TODO: add error handling
+    }
     for (let i = 1; i <= n; i++) {
       processing.innerHTML = "Permutation " + i + "...";
       const permutation = seededShuffle(files, rng);
@@ -148,8 +151,18 @@ generateButton.addEventListener("click", async () => {
         const firstPage = mergedPdf.getPage(0);
         const { width, height } = firstPage.getSize();
         const fontSize = 20;
+        let offset = stampOffset.valueAsNumber;
+        if (Number.isNaN(stampOffset.valueAsNumber)) {
+          console.log("Did not receive offset, choose default value 50");
+          offset = 50;
+        }
+        if (stampText.value == "") {
+          console.log(
+            "No text for stamp received. Printing only permutation number.",
+          );
+        }
         firstPage.drawText(stampText.value + " " + i, {
-          x: (stampOffset.valueAsNumber * width) / 100,
+          x: (offset * width) / 100,
           y: height - 2 * fontSize,
           size: fontSize,
         });
