@@ -280,7 +280,7 @@ button {
 .tooltip-content {
   display: none;
   position: absolute;
-  top: 30px;
+  top: -35px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #333;
@@ -288,10 +288,13 @@ button {
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 12px;
+  white-space: nowrap;
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.label-with-tooltip:hover .tooltip-content {
-  display: block;
+@media (width >= 900px) {
+  .label-with-tooltip:hover .tooltip-content {
+    display: block;
+  }
 }
