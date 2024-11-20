@@ -4,6 +4,12 @@
   min-height: 100vh;
 }
 
+@media (width >= 600px) {
+  .container {
+    width: 75%;
+  }
+}
+
 @media (width >= 900px) {
   .container {
     width: 50%;
@@ -53,7 +59,7 @@ footer p {
   margin: 5px;
 }
 
-h2 {
+h1 {
   color: #4b5563;
   text-align: center;
 }
