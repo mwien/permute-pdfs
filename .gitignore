@@ -11,7 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
-build
+build/*
+!build/googlee0b3d9cdad53f970.html
 
 # Editor directories and files
 .vscode/*
