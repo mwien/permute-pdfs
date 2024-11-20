@@ -1,4 +1,4 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import { ZipWriter, BlobWriter, BlobReader, TextReader } from "@zip.js/zip.js";
 import * as seedrandom from "seedrandom";
 
@@ -23,6 +23,7 @@ const processing = document.getElementById("processing");
 const generateButton = document.getElementById("generate-button");
 
 let files = [];
+let titleFile;
 
 window.onload = function () {
   if (includeTitle.checked) {
@@ -61,6 +62,20 @@ pdfInput.addEventListener("change", function (event) {
   generateButton.disabled = files.length === 0;
 });
 
+titleInput.addEventListener("change", function (event) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function (event) {
+    const arrayBuffer = event.target.result;
+    titleFile = [file, arrayBuffer];
+    titleFilename.innerHTML = file.name;
+  };
+
+  reader.readAsArrayBuffer(file);
+  titleInput.value = null;
+});
+
 function seededShuffle(arrayIn, rng) {
   const array = [...arrayIn];
   // Fisher-Yates Shuffle
@@ -76,12 +91,8 @@ async function appendPDF(toPdf, fromPdf) {
   newPages.forEach((page) => toPdf.addPage(page));
 }
 
-async function mergePDFs(title, files) {
+async function mergePDFs(files) {
   const mergedPdf = await PDFDocument.create();
-  if (title != null) {
-    const titlePdf = await PDFDocument.load(title);
-    await appendPDF(mergedPdf, titlePdf);
-  }
   for (const file of files) {
     const nextPdf = await PDFDocument.load(file);
     await appendPDF(mergedPdf, nextPdf);
@@ -101,14 +112,6 @@ function getPermutationString(permutations) {
   return permutation_string;
 }
 
-const read = (blob) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (event) => resolve(event.target.result);
-    reader.onerror = reject;
-    reader.readAsArrayBuffer(blob);
-  });
-
 generateButton.addEventListener("click", async () => {
   try {
     let n = numPermutations.valueAsNumber;
@@ -124,17 +127,11 @@ generateButton.addEventListener("click", async () => {
     if (addSeed.checked) {
       const seed = seedInput.valueAsNumber;
       if (Number.isNaN(seed)) {
-        console.log("Did not receive seed even though one was specified!");
+        console.log("Did not receive seed even though the option was checked!");
       }
       rng = seedrandom.default(seed);
     } else {
       rng = seedrandom.default();
-    }
-    let title = [null, null];
-    if (includeTitle.checked && titleInput.files.length > 0) {
-      const file = titleInput.files[0];
-      const arrayBuffer = await read(file); // alternatively, read onchange
-      title = [file, arrayBuffer];
     }
     for (let i = 1; i <= n; i++) {
       processing.innerHTML = "Permutation " + i + "...";
@@ -142,15 +139,19 @@ generateButton.addEventListener("click", async () => {
       // store permutation of file names in permutations
       permutations.push(permutation.map((x) => x[0]));
       // merge pdfs in permutation order
-      const mergedPdf = await mergePDFs(
-        title[1],
-        permutation.map((x) => x[1]),
-      );
+      let toMerge = permutation.map((x) => x[1]);
+      if (includeTitle.checked) {
+        toMerge = [titleFile[1], ...toMerge];
+      }
+      const mergedPdf = await mergePDFs(toMerge);
 
       if (includeStamp.checked) {
+        const helveticaFont = await mergedPdf.embedFont(
+          StandardFonts.Helvetica,
+        );
+        const fontSize = 20;
         const firstPage = mergedPdf.getPage(0);
         const { width, height } = firstPage.getSize();
-        const fontSize = 20;
         let offset = stampOffset.valueAsNumber;
         if (Number.isNaN(stampOffset.valueAsNumber)) {
           console.log("Did not receive offset, choose default value 50");
@@ -165,6 +166,7 @@ generateButton.addEventListener("click", async () => {
           x: (offset * width) / 100,
           y: height - 2 * fontSize,
           size: fontSize,
+          font: helveticaFont,
         });
       }
 
@@ -202,7 +204,7 @@ generateButton.addEventListener("click", async () => {
     } else {
       // write files to single pdf
       processing.innerHTML = "Collapse PDFs...";
-      const fullPdf = await mergePDFs(null, permutedPdfBytes);
+      const fullPdf = await mergePDFs(permutedPdfBytes);
       const fullPdfBytes = await fullPdf.save();
       const result = new Blob([fullPdfBytes], { type: "application/pdf" });
 
@@ -259,10 +261,6 @@ addSeed.addEventListener("change", () => {
   } else {
     seedForm.style.display = "none";
   }
-});
-
-titleInput.addEventListener("change", function (event) {
-  titleFilename.innerHTML = event.target.files[0].name;
 });
 
 document.querySelectorAll(".faq-question").forEach((question) => {
